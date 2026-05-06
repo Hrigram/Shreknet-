@@ -3,16 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Мой первый чат на Firebase</title>
+    <title>Чат на Firebase</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <div class="chat-container">
     <div class="chat-header">
-        <h2>🔥 Чат на Firebase</h2>
+        <h2>💬 Чат • <span id="username-display">Гость</span></h2>
+        <button id="change-name-btn" class="change-name-btn">✎ Сменить имя</button>
     </div>
     <div id="messages-list" class="messages-list">
-        <!-- Здесь будут появляться сообщения -->
         <div class="message system">Добро пожаловать в чат! Напишите что-нибудь...</div>
     </div>
     <div class="input-area">
@@ -20,7 +20,6 @@
         <button id="send-button">📤 Отправить</button>
     </div>
 </div>
-<!-- Подключение Firebase SDK -->
 <script type="importmap">
     {
         "imports": {

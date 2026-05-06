@@ -1,8 +1,9 @@
-
+// Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import { getDatabase, ref, push, onChildAdded } from "firebase/database";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
 
-// Ваша конфигурация Firebase (скопируйте из консоли)
+// Your web app's Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyC0gnDfPZKdTRx0pQ1ExYtsv31z37V6XEY",
   authDomain: "shreknet-bloodline.firebaseapp.com",
@@ -12,6 +13,9 @@ const firebaseConfig = {
   messagingSenderId: "807684896663",
   appId: "1:807684896663:web:0271fdd772993dc13e76d2"
 };
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
 
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);

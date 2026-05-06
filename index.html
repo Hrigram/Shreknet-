@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Мой первый чат на Firebase</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="chat-container">
+    <div class="chat-header">
+        <h2>🔥 Чат на Firebase</h2>
+    </div>
+    <div id="messages-list" class="messages-list">
+        <!-- Здесь будут появляться сообщения -->
+        <div class="message system">Добро пожаловать в чат! Напишите что-нибудь...</div>
+    </div>
+    <div class="input-area">
+        <input type="text" id="message-input" placeholder="Введите ваше сообщение..." autocomplete="off">
+        <button id="send-button">📤 Отправить</button>
+    </div>
+</div>
+<!-- Подключение Firebase SDK -->
+<script type="importmap">
+    {
+        "imports": {
+            "firebase/app": "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js",
+            "firebase/database": "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js"
+        }
+    }
+</script>
+<script type="module" src="app.js"></script>
+</body>
+</html>

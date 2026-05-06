@@ -52,36 +52,6 @@ messageInput.addEventListener('keypress', (e) => {
 // === ПОЛУЧЕНИЕ СООБЩЕНИЙ В РЕАЛЬНОМ ВРЕМЕНИ ===
 const messagesList = document.getElementById('messages-list');
 
-// Эта функция будет срабатывать для каждого нового элемента в списке "messages"
-onChildAdded(messagesRef, (snapshot) => {
-    const data = snapshot.val();
-    if (!data) return;
-
-    // Создаем новый блок для сообщения
-    const messageDiv = document.createElement('div');
-    messageDiv.classList.add('message');
-    // Убираем системное сообщение, если оно есть и это первое реальное сообщение
-    if (messagesList.children.length === 1 && messagesList.children[0].classList.contains('system')) {
-        messagesList.innerHTML = '';
-    }
-    messageDiv.innerHTML = `<strong>${escapeHtml(data.name)}</strong> ${escapeHtml(data.text)}`;
-    messagesList.appendChild(messageDiv);
-
-    // Автоматически прокручиваем вниз
-    messagesList.scrollTop = messagesList.scrollHeight;
-});
-
-// Простая защита от XSS-атак через экранирование HTML
-function escapeHtml(str) {
-    if (!str) return '';
-    return str
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#39;');
-}
-
 // При загрузке страницы очищаем контейнер, но оставляем системное приветствие (по желанию)
 const messagesList = document.getElementById('messages-list');
 messagesList.innerHTML = '<div class="message system">Загрузка истории...</div>';
@@ -102,3 +72,16 @@ onChildAdded(messagesRef, (snapshot) => {
     messagesList.appendChild(messageDiv);
     messagesList.scrollTop = messagesList.scrollHeight;
 });
+
+// Простая защита от XSS-атак через экранирование HTML
+function escapeHtml(str) {
+    if (!str) return '';
+    return str
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
+
+;

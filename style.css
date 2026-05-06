@@ -274,3 +274,33 @@ body::after {
 .message:hover {
     animation: glitch 0.2s step-end;
 }
+
+/* Статус "печатает" */
+.typing-status {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.7rem;
+    color: #5eff6e;
+    background: #021102;
+    padding: 6px 15px;
+    border-top: 1px solid #1f9a2e;
+    text-align: left;
+    letter-spacing: 1px;
+    opacity: 0.9;
+    min-height: 32px;
+}
+.typing-status::before {
+    content: "> ";
+    animation: blink 1s step-end infinite;
+}
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
+
+/* Для ASCII-логирования */
+.message pre {
+    margin: 0;
+    white-space: pre-wrap;
+    font-family: inherit;
+    color: #4aff5a;
+}

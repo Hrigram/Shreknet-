@@ -1,7 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getDatabase, ref, push, onChildAdded } from "firebase/database";
 
-// Ваша конфигурация Firebase (уже правильная)
 const firebaseConfig = {
   apiKey: "AIzaSyC0gnDfPZKdTRx0pQ1ExYtsv31z37V6XEY",
   authDomain: "shreknet-bloodline.firebaseapp.com",
@@ -18,7 +17,7 @@ const messagesRef = ref(db, 'messages');
 
 let currentUsername = "";
 
-// Загрузка или запрос имени
+// === Функции работы с именем ===
 function loadOrAskName() {
     let saved = localStorage.getItem('chat_username');
     if (saved && saved.trim() !== "") {
@@ -32,45 +31,59 @@ function loadOrAskName() {
         }
         localStorage.setItem('chat_username', currentUsername);
     }
+    // Обновляем отображение имени
     const displaySpan = document.getElementById('username-display');
     if (displaySpan) displaySpan.textContent = currentUsername;
     return currentUsername;
 }
 
-// Смена имени
 function changeName() {
     let newName = prompt("Введите новое имя:", currentUsername);
     if (newName && newName.trim() !== "" && newName.trim() !== currentUsername) {
+        let oldName = currentUsername;
         currentUsername = newName.trim();
         localStorage.setItem('chat_username', currentUsername);
         const displaySpan = document.getElementById('username-display');
         if (displaySpan) displaySpan.textContent = currentUsername;
-        // Отправить системное сообщение о смене имени (можно удалить, если не нужно)
+        
+        // Отправляем системное сообщение о смене имени
         push(messagesRef, {
-            name: "Система",
-            text: `👤 Пользователь сменил имя на ${currentUsername}`,
+            name: "⚠️ СИСТЕМА",
+            text: `${oldName} → теперь → ${currentUsername}`,
             timestamp: Date.now()
-        }).catch(console.error);
+        }).catch(err => console.error("Ошибка отправки:", err));
+        
+        alert(`Имя изменено на ${currentUsername}`);
     } else if (newName === currentUsername) {
         alert("Это ваше текущее имя.");
     }
 }
 
+// === Ждём загрузки DOM ===
 document.addEventListener('DOMContentLoaded', () => {
+    // Загружаем или спрашиваем имя
     loadOrAskName();
-
+    
+    // Навешиваем обработчик на кнопку смены имени
     const changeBtn = document.getElementById('change-name-btn');
-    if (changeBtn) changeBtn.addEventListener('click', changeName);
-
+    if (changeBtn) {
+        changeBtn.addEventListener('click', changeName);
+        console.log("Кнопка смены имени подключена");
+    } else {
+        console.error("Кнопка смены имени не найдена в DOM");
+    }
+    
+    // Элементы чата
     const messageInput = document.getElementById('message-input');
     const sendBtn = document.getElementById('send-button');
     const messagesList = document.getElementById('messages-list');
-
+    
     if (!messageInput || !sendBtn || !messagesList) {
-        console.error("Элементы чата не найдены");
+        console.error("Ошибка: не найдены элементы чата");
         return;
     }
-
+    
+    // Отправка сообщения
     function sendMessage() {
         const text = messageInput.value.trim();
         if (text === "") return;
@@ -82,14 +95,14 @@ document.addEventListener('DOMContentLoaded', () => {
         messageInput.value = "";
         messageInput.focus();
     }
-
+    
     sendBtn.addEventListener('click', sendMessage);
     messageInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') sendMessage();
     });
-
-    // Загрузка всех сообщений (история + новые)
-    messagesList.innerHTML = '<div class="message system">Загрузка истории...</div>';
+    
+    // Загрузка сообщений (история)
+    messagesList.innerHTML = '<div class="message system">Загрузка истории терминала...</div>';
     onChildAdded(messagesRef, (snapshot) => {
         const data = snapshot.val();
         if (!data) return;

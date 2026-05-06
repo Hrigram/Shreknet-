@@ -132,3 +132,35 @@ body {
     background: #cbd5e1;
     border-radius: 3px;
 }
+/* Стили для кнопки смены имени */
+.change-name-btn {
+    background: rgba(255,255,255,0.2);
+    border: 1px solid rgba(255,255,255,0.4);
+    border-radius: 20px;
+    color: white;
+    padding: 4px 12px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-left: 10px;
+}
+.change-name-btn:hover {
+    background: rgba(255,255,255,0.3);
+}
+.chat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+.chat-header h2 {
+    margin: 0;
+    font-size: 1.2rem;
+}
+@media (max-width: 500px) {
+    .chat-header {
+        flex-direction: column;
+        text-align: center;
+    }
+}

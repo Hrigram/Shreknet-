@@ -34,13 +34,6 @@ document.querySelector('.chat-header h2').innerHTML = `💬 Чат • ${escapeH
 // --- ДАЛЕЕ ВАШ ОБЫЧНЫЙ КОД ДЛЯ ОТПРАВКИ И ПОЛУЧЕНИЯ СООБЩЕНИЙ ---
 // ... (функция sendMessage, onChildAdded и т.д.)
 
-// Спрашиваем имя пользователя
-const username = prompt("Представьтесь, пожалуйста, как к вам обращаться?");
-if (!username) {
-    alert("Без имени нельзя! Обновите страницу и введите имя.");
-    window.location.reload();
-}
-
 // === ОТПРАВКА СООБЩЕНИЯ ===
 const messageInput = document.getElementById('message-input');
 const sendBtn = document.getElementById('send-button');

@@ -15,85 +15,46 @@ const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 const messagesRef = ref(db, 'messages');
 
-console.log("Firebase инициализирован");
+// Запоминаем или спрашиваем имя
+let username = localStorage.getItem('username');
+if (!username) {
+    username = prompt("Введите ваше имя:");
+    if (username) localStorage.setItem('username', username);
+    else username = "Гость";
+}
 
-// Ждём полной загрузки HTML
-document.addEventListener('DOMContentLoaded', () => {
-    console.log("DOM загружен, ищем элементы...");
-    
-    // --- ЭЛЕМЕНТЫ ИНТЕРФЕЙСА ---
-    const messageInput = document.getElementById('message-input');
-    const sendBtn = document.getElementById('send-button');
-    const messagesList = document.getElementById('messages-list');
-    
-    if (!messageInput) console.error("❌ Не найден элемент #message-input");
-    if (!sendBtn) console.error("❌ Не найден элемент #send-button");
-    if (!messagesList) console.error("❌ Не найден элемент #messages-list");
-    
-    if (!messageInput || !sendBtn || !messagesList) {
-        alert("Ошибка: на странице отсутствуют нужные элементы. Проверьте id в HTML.");
-        return;
+// Элементы
+const input = document.getElementById('message-input');
+const btn = document.getElementById('send-button');
+const container = document.getElementById('messages-list');
+
+function send() {
+    let text = input.value.trim();
+    if (text === "") return;
+    push(messagesRef, { name: username, text: text });
+    input.value = "";
+}
+
+btn.onclick = send;
+input.onkeypress = (e) => { if (e.key === "Enter") send(); };
+
+// Загрузка сообщений
+container.innerHTML = '<div class="message system">Загрузка...</div>';
+onChildAdded(messagesRef, (snap) => {
+    let msg = snap.val();
+    if (!msg) return;
+    if (container.children.length === 1 && container.children[0].innerText.includes("Загрузка")) {
+        container.innerHTML = "";
     }
-    
-    // --- ЗАПОМИНАНИЕ ИМЕНИ ---
-    let username = localStorage.getItem('chat_username');
-    if (!username) {
-        username = prompt("Как вас зовут?");
-        if (username && username.trim() !== "") {
-            username = username.trim();
-            localStorage.setItem('chat_username', username);
-        } else {
-            username = "Гость";
-        }
-    }
-    console.log(`Имя пользователя: ${username}`);
-    
-    // Покажем имя в шапке (если есть)
-    const header = document.querySelector('.chat-header h2');
-    if (header) header.innerHTML = `💬 Чат • ${escapeHtml(username)}`;
-    
-    // --- ФУНКЦИЯ ОТПРАВКИ ---
-    function sendMessage() {
-        const text = messageInput.value.trim();
-        if (text === "") return;
-        console.log(`Отправка: ${text}`);
-        push(messagesRef, {
-            name: username,
-            text: text,
-            timestamp: Date.now()
-        }).catch(err => console.error("Ошибка отправки:", err));
-        messageInput.value = "";
-        messageInput.focus();
-    }
-    
-    sendBtn.addEventListener('click', sendMessage);
-    messageInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') sendMessage();
-    });
-    
-    // --- ЗАГРУЗКА ИСТОРИИ ---
-    messagesList.innerHTML = '<div class="message system">Загрузка истории...</div>';
-    
-    onChildAdded(messagesRef, (snapshot) => {
-        const data = snapshot.val();
-        if (!data) return;
-        
-        // Убираем "Загрузка..." при первом сообщении
-        if (messagesList.children.length === 1 && messagesList.children[0].innerText.includes('Загрузка')) {
-            messagesList.innerHTML = '';
-        }
-        
-        const messageDiv = document.createElement('div');
-        messageDiv.classList.add('message');
-        messageDiv.innerHTML = `<strong>${escapeHtml(data.name)}</strong> ${escapeHtml(data.text)}`;
-        messagesList.appendChild(messageDiv);
-        messagesList.scrollTop = messagesList.scrollHeight;
-        console.log(`Получено сообщение от ${data.name}: ${data.text}`);
-    });
+    let div = document.createElement("div");
+    div.className = "message";
+    div.innerHTML = `<strong>${escapeHtml(msg.name)}</strong> ${escapeHtml(msg.text)}`;
+    container.appendChild(div);
+    container.scrollTop = container.scrollHeight;
 });
 
 function escapeHtml(str) {
-    if (!str) return '';
+    if (!str) return "";
     return str.replace(/[&<>]/g, function(m) {
         if (m === '&') return '&amp;';
         if (m === '<') return '&lt;';

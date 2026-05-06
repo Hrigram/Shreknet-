@@ -81,3 +81,24 @@ function escapeHtml(str) {
         .replace(/"/g, '&quot;')
         .replace(/'/g, '&#39;');
 }
+
+// При загрузке страницы очищаем контейнер, но оставляем системное приветствие (по желанию)
+const messagesList = document.getElementById('messages-list');
+messagesList.innerHTML = '<div class="message system">Загрузка истории...</div>';
+
+// Подписываемся на все сообщения (существующие + новые)
+onChildAdded(messagesRef, (snapshot) => {
+    const data = snapshot.val();
+    if (!data) return;
+
+    // Убираем временное "Загрузка..." если это первое сообщение
+    if (messagesList.children.length === 1 && messagesList.children[0].innerText.includes('Загрузка')) {
+        messagesList.innerHTML = '';
+    }
+    
+    const messageDiv = document.createElement('div');
+    messageDiv.classList.add('message');
+    messageDiv.innerHTML = `<strong>${escapeHtml(data.name)}</strong> ${escapeHtml(data.text)}`;
+    messagesList.appendChild(messageDiv);
+    messagesList.scrollTop = messagesList.scrollHeight;
+});

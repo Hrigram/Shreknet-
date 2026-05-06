@@ -1,27 +1,17 @@
 import { initializeApp } from "firebase/app";
 import { getDatabase, ref, push, onChildAdded } from "firebase/database";
 
-<script type="module">
-  // Import the functions you need from the SDKs you need
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
-  // TODO: Add SDKs for Firebase products that you want to use
-  // https://firebase.google.com/docs/web/setup#available-libraries
-
-  // Your web app's Firebase configuration
-  const firebaseConfig = {
-    apiKey: "AIzaSyC0gnDfPZKdTRx0pQ1ExYtsv31z37V6XEY",
+// TODO: Замените этот объект на ваш!
+// ID вашего проекта можно скопировать в настройках Firebase (шестеренка -> Настройки проекта -> Общие)
+const firebaseConfig = {
+apiKey: "AIzaSyC0gnDfPZKdTRx0pQ1ExYtsv31z37V6XEY",
     authDomain: "shreknet-bloodline.firebaseapp.com",
     databaseURL: "https://shreknet-bloodline-default-rtdb.europe-west1.firebasedatabase.app",
     projectId: "shreknet-bloodline",
     storageBucket: "shreknet-bloodline.firebasestorage.app",
     messagingSenderId: "807684896663",
     appId: "1:807684896663:web:c9878ece00b2b69d3e76d2"
-  };
-
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-</script>
-
+};
 // Инициализация Firebase
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);

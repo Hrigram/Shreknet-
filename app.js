@@ -18,6 +18,22 @@ const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 const messagesRef = ref(db, 'messages'); // Ссылка на узел "messages" в базе данных
 
+// --- РАБОТА С ИМЕНЕМ ПОЛЬЗОВАТЕЛЯ ---
+let username = localStorage.getItem('chat_username');
+if (!username) {
+    username = prompt("Представьтесь, пожалуйста, как к вам обращаться?");
+    if (username && username.trim() !== "") {
+        localStorage.setItem('chat_username', username.trim());
+    } else {
+        username = "Гость";
+    }
+}
+// Показываем имя в заголовке (опционально)
+document.querySelector('.chat-header h2').innerHTML = `💬 Чат • ${escapeHtml(username)}`;
+
+// --- ДАЛЕЕ ВАШ ОБЫЧНЫЙ КОД ДЛЯ ОТПРАВКИ И ПОЛУЧЕНИЯ СООБЩЕНИЙ ---
+// ... (функция sendMessage, onChildAdded и т.д.)
+
 // Спрашиваем имя пользователя
 const username = prompt("Представьтесь, пожалуйста, как к вам обращаться?");
 if (!username) {

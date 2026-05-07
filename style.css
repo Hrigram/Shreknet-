@@ -30,7 +30,7 @@ body {
 /* ЭЛТ-экран (квадратный) */
 .chat-container {
     width: 600px;
-    height: 500px;  /* почти квадрат 1:1, можно 600x500 */
+    height: auto;  /* почти квадрат 1:1, можно 600x500 */
     max-width: 80vw;
     max-height: 70vh;
     background: #030603;
@@ -373,4 +373,25 @@ body {
     .key.space {
         min-width: 120px;
     }
+}
+/* Принудительное отображение клавиатуры */
+.retro-keyboard {
+    display: block !important;
+    position: relative;
+    z-index: 10;
+    margin-bottom: 20px;
+}
+
+/* Убедимся, что body может прокручиваться */
+body {
+    overflow-y: auto;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding-top: 20px;
+    padding-bottom: 40px;
+}
+
+/* Отступ после монитора, чтобы клавиатура не прилипала */
+.monitor-body {
+    margin-bottom: 20px;
 }

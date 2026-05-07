@@ -7,19 +7,20 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div class="chat-container">
-    <div class="chat-header">
-        <h2>💬 Чат • <span id="username-display">Гость</span></h2>
-        <button id="change-name-btn" class="change-name-btn">✎ Сменить имя</button>
+<div class="monitor-body">
+    <div class="chat-container">
+        <div class="chat-header">
+            <h2>💬 Чат • <span id="username-display">Гость</span></h2>
+            <button id="change-name-btn" class="change-name-btn">✎ Сменить имя</button>
+        </div>
+        <div id="messages-list" class="messages-list">
+            <div class="message system">Добро пожаловать в чат! Напишите что-нибудь...</div>
+        </div>
+        <div class="input-area">
+            <input type="text" id="message-input" placeholder="Введите ваше сообщение..." autocomplete="off">
+            <button id="send-button">📤 Отправить</button>
+        </div>
     </div>
-    <div id="messages-list" class="messages-list">
-        <div class="message system">Добро пожаловать в чат! Напишите что-нибудь...</div>
-    </div>
-    <div class="input-area">
-        <input type="text" id="message-input" placeholder="Введите ваше сообщение..." autocomplete="off">
-        <button id="send-button">📤 Отправить</button>
-    </div>
-    <!-- ВНИМАНИЕ: здесь больше нет второго блока .chat-header -->
 </div>
 <script type="importmap">
     {

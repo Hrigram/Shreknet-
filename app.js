@@ -23,7 +23,8 @@ let typingTimeout;
 const asciiBat = `     
   __QQ
  (_)_">
-_) SHREKNET
+ _) SHREKNET
+ 
 `;
 
 // === Функции работы с именем ===

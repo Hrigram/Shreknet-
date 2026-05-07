@@ -1,4 +1,4 @@
-/* Импорт пиксельного шрифта */
+/* Шрифт как у терминалов */
 @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
 
 * {
@@ -8,289 +8,285 @@
 }
 
 body {
-    background: radial-gradient(circle at 20% 30%, #0a0f0a, #020402);
+    background: #0a0c0a;
     height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 1.5rem;
-    font-family: 'Share Tech Mono', 'Courier New', monospace;
+    padding: 40px 20px;
+    font-family: 'Share Tech Mono', monospace;
     position: relative;
 }
 
-/* CRT-эффект: мерцание и горизонтальные линии */
-body::before {
+/* Внешний корпус монитора */
+.monitor-body {
+    background: #1a1c1a;
+    padding: 24px 24px 32px 24px;
+    border-radius: 48px 48px 36px 36px;
+    box-shadow: 0 20px 35px rgba(0,0,0,0.5), inset 0 1px 2px rgba(255,255,255,0.05);
+    position: relative;
+}
+
+/* ЭЛТ-экран (квадратный) */
+.chat-container {
+    width: 600px;
+    height: 500px;  /* почти квадрат 1:1, можно 600x500 */
+    max-width: 80vw;
+    max-height: 70vh;
+    background: #030603;
+    border-radius: 24px;
+    box-shadow: 
+        inset 0 0 60px rgba(0,0,0,0.8),
+        inset 0 0 20px rgba(0,255,0,0.1),
+        0 0 0 6px #2c2e2c,
+        0 0 0 12px #111311;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+}
+
+/* Эффект выпуклости: градиент по краям */
+.chat-container::before {
     content: "";
-    position: fixed;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at center, transparent 60%, rgba(0,0,0,0.5) 100%);
+    pointer-events: none;
+    z-index: 3;
+    border-radius: 24px;
+}
+
+/* Классическое мерцание ЭЛТ */
+@keyframes flicker {
+    0% { opacity: 0.97; }
+    10% { opacity: 0.99; }
+    20% { opacity: 0.96; }
+    30% { opacity: 0.98; }
+    40% { opacity: 0.97; }
+    50% { opacity: 0.99; }
+    60% { opacity: 0.95; }
+    70% { opacity: 0.98; }
+    80% { opacity: 0.96; }
+    90% { opacity: 0.99; }
+    100% { opacity: 0.95; }
+}
+.chat-container {
+    animation: flicker 0.2s infinite;
+}
+
+/* Линии развёртки */
+.chat-container::after {
+    content: "";
+    position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
     background: repeating-linear-gradient(
         0deg,
-        rgba(0, 255, 0, 0.02) 0px,
-        rgba(0, 255, 0, 0.02) 2px,
+        rgba(0, 255, 0, 0.03) 0px,
+        rgba(0, 255, 0, 0.03) 2px,
         transparent 2px,
-        transparent 6px
+        transparent 4px
     );
     pointer-events: none;
-    z-index: 1;
-    animation: flicker 0.15s infinite;
+    z-index: 3;
+    border-radius: 24px;
 }
 
-@keyframes flicker {
-    0% { opacity: 0.8; }
-    100% { opacity: 1; }
-}
-
-/* Тёмная вуаль по краям */
-body::after {
-    content: "";
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: radial-gradient(circle, transparent 60%, rgba(0,0,0,0.5) 100%);
-    pointer-events: none;
-    z-index: 1;
-}
-
-/* Контейнер чата — стеклянная панель */
-.chat-container {
-    width: 100%;
-    max-width: 850px;
-    height: 85vh;
-    background: rgba(5, 10, 5, 0.7);
-    backdrop-filter: blur(8px);
-    border: 1px solid rgba(31, 154, 46, 0.5);
-    border-radius: 20px;
-    box-shadow: 0 0 30px rgba(0, 255, 0, 0.15), inset 0 0 20px rgba(0, 255, 0, 0.05);
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    position: relative;
-    z-index: 2;
-    transition: box-shadow 0.3s ease;
-}
-
-.chat-container:hover {
-    box-shadow: 0 0 40px rgba(0, 255, 0, 0.3);
-}
-
-/* Шапка с неоновой подсветкой */
+/* Шапка чата — как строка состояния терминала */
 .chat-header {
-    background: rgba(2, 17, 2, 0.8);
-    backdrop-filter: blur(4px);
+    background: #021102cc;
+    backdrop-filter: blur(2px);
     border-bottom: 1px solid #1f9a2e;
-    padding: 14px 24px;
+    padding: 12px 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
-    gap: 12px;
+    gap: 8px;
+    z-index: 2;
 }
 
 .chat-header h2 {
     margin: 0;
-    font-size: 1.4rem;
+    font-size: 1.2rem;
     font-weight: normal;
     color: #4aff5a;
-    text-shadow: 0 0 6px #2aff4a;
-    letter-spacing: 2px;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
+    text-shadow: 0 0 4px #2aff4a;
+    letter-spacing: 1px;
 }
 
-/* Мигающий курсор */
 .chat-header h2::before {
-    content: ">";
-    font-weight: bold;
-    animation: blink 1.2s step-end infinite;
-    text-shadow: 0 0 8px #00ff00;
+    content: "⚡ ";
+    animation: blink 1s infinite;
 }
 
-@keyframes blink {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0; }
-}
-
-/* Кнопки в стиле терминала */
+/* Кнопки в стиле аппаратных */
 .change-name-btn, #clear-chat-btn {
-    background: rgba(10, 30, 10, 0.8);
-    border: 1px solid #2eff4a;
-    color: #5eff6e;
-    padding: 6px 14px;
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 0.8rem;
+    background: #1e2a1e;
+    border: 1px solid #3a6e3a;
+    color: #8aff8a;
+    padding: 4px 12px;
+    font-family: monospace;
+    font-size: 0.7rem;
+    border-radius: 16px;
     cursor: pointer;
-    transition: all 0.2s;
-    border-radius: 30px;
-    letter-spacing: 0.5px;
-    backdrop-filter: blur(4px);
+    transition: 0.1s linear;
+    box-shadow: inset 0 -1px 0 #0a0f0a, 0 1px 0 #2a4a2a;
 }
 
-.change-name-btn:hover, #clear-chat-btn:hover {
-    background: #1f3a1f;
-    text-shadow: 0 0 4px #00ff00;
-    box-shadow: 0 0 10px #2aff4a;
-    border-color: #8aff8a;
+.change-name-btn:active, #clear-chat-btn:active {
+    transform: translateY(1px);
+    box-shadow: inset 0 1px 0 #0a0f0a;
 }
 
-/* Область сообщений */
+/* Список сообщений */
 .messages-list {
     flex: 1;
-    padding: 20px;
+    padding: 16px;
     overflow-y: auto;
     display: flex;
     flex-direction: column;
-    gap: 12px;
-    background: rgba(3, 8, 3, 0.5);
+    gap: 8px;
+    background: #010501;
+    scroll-behavior: smooth;
 }
 
-/* Кастомизация скроллбара */
+/* Стиль скролла как у старого терминала */
 .messages-list::-webkit-scrollbar {
-    width: 8px;
+    width: 10px;
 }
 .messages-list::-webkit-scrollbar-track {
-    background: #021102;
-    border-radius: 10px;
+    background: #0a120a;
+    border-left: 1px solid #1f4a1f;
 }
 .messages-list::-webkit-scrollbar-thumb {
-    background: #1f9a2e;
-    border-radius: 10px;
+    background: #2a6e2a;
+    border-radius: 0;
 }
 .messages-list::-webkit-scrollbar-thumb:hover {
-    background: #3eff4a;
+    background: #3eae3e;
 }
 
-/* Отдельное сообщение */
+/* Сообщения */
 .message {
     max-width: 85%;
-    padding: 8px 16px;
-    background: rgba(8, 18, 8, 0.8);
-    backdrop-filter: blur(2px);
-    border-left: 4px solid #2eff4a;
-    border-radius: 12px;
-    font-size: 0.9rem;
-    line-height: 1.45;
+    padding: 6px 12px;
+    background: #0a120a;
+    border-left: 3px solid #2eff4a;
+    font-size: 0.85rem;
+    line-height: 1.4;
     color: #bbffbb;
-    transition: all 0.2s ease;
-    animation: fadeInUp 0.2s ease-out;
-}
-
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(8px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.message:hover {
-    transform: translateX(4px);
-    background: rgba(20, 40, 20, 0.9);
-    border-left-color: #8aff8a;
+    word-break: break-word;
+    transition: all 0.05s linear;
 }
 
 .message strong {
-    color: #6eff7e;
+    color: #5eff6e;
     font-weight: normal;
+    text-transform: uppercase;
     letter-spacing: 1px;
-    text-shadow: 0 0 3px #00cc00;
-    margin-right: 12px;
+    margin-right: 8px;
 }
 
-/* Системные сообщения */
+/* Системное сообщение */
 .message.system {
-    background: rgba(5, 15, 5, 0.8);
+    background: #051005;
     border-left-color: #88ff88;
     color: #aaffaa;
     text-align: center;
-    max-width: 95%;
-    align-self: center;
-    font-size: 0.8rem;
     font-style: italic;
+    align-self: center;
+    max-width: 95%;
+    font-size: 0.75rem;
 }
 
-/* Статус "печатает" */
+/* Статус печати */
 .typing-status {
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 0.7rem;
-    color: #6eff7e;
-    background: rgba(2, 17, 2, 0.7);
-    backdrop-filter: blur(4px);
-    padding: 6px 20px;
-    border-top: 1px solid #1f9a2e;
-    text-align: left;
-    letter-spacing: 1px;
-    min-height: 34px;
+    background: #010601;
+    border-top: 1px solid #1a4a1a;
+    padding: 4px 16px;
+    font-size: 0.65rem;
+    color: #7eff7e;
+    font-family: monospace;
+    min-height: 26px;
 }
-
 .typing-status::before {
-    content: "> ";
-    animation: blink 1s step-end infinite;
+    content: "♪ ";
+    animation: blink 1s steps(2) infinite;
 }
 
-/* Область ввода */
+/* Панель ввода */
 .input-area {
-    background: rgba(2, 17, 2, 0.8);
-    border-top: 1px solid #1f9a2e;
-    padding: 16px 20px;
+    background: #021102;
+    border-top: 1px solid #1a4a1a;
+    padding: 12px 16px;
     display: flex;
-    gap: 12px;
+    gap: 10px;
+    z-index: 2;
 }
 
 #message-input {
     flex: 1;
-    background: #010501;
-    border: 1px solid #1f9a2e;
-    border-radius: 40px;
-    padding: 12px 20px;
+    background: #000000;
+    border: 1px solid #2a6e2a;
+    padding: 8px 12px;
     font-family: 'Share Tech Mono', monospace;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     color: #4eff5a;
     outline: none;
-    transition: all 0.2s;
 }
 
 #message-input:focus {
-    border-color: #6eff7e;
-    box-shadow: 0 0 12px #2aff4a;
-    background: #000000;
+    border-color: #5eff6e;
+    box-shadow: inset 0 0 4px #2aff4a;
 }
 
 #send-button {
-    background: rgba(10, 30, 10, 0.9);
-    border: 1px solid #2eff4a;
-    border-radius: 40px;
-    color: #5eff6e;
-    padding: 0 28px;
-    font-family: 'Share Tech Mono', monospace;
+    background: #1a2a1a;
+    border: 1px solid #3a8e3a;
+    color: #8aff8a;
+    padding: 0 16px;
+    font-family: monospace;
     font-weight: bold;
     cursor: pointer;
-    transition: all 0.2s;
-    letter-spacing: 1px;
+    transition: 0.05s linear;
+}
+#send-button:active {
+    transform: translateY(1px);
 }
 
-#send-button:hover {
-    background: #1a3a1a;
-    text-shadow: 0 0 6px #00ff00;
-    box-shadow: 0 0 12px #2aff4a;
+/* Вентиляционные решётки (декор) */
+.monitor-body::before,
+.monitor-body::after {
+    content: "";
+    position: absolute;
+    bottom: 8px;
+    width: 40px;
+    height: 4px;
+    background: repeating-linear-gradient(90deg, #2a2c2a 0px, #2a2c2a 4px, transparent 4px, transparent 8px);
+}
+.monitor-body::before {
+    left: 20px;
+}
+.monitor-body::after {
+    right: 20px;
 }
 
-/* Адаптация под мобильные */
-@media (max-width: 600px) {
-    body {
-        padding: 0.5rem;
+/* Адаптация для телефонов (оставляем квадратным) */
+@media (max-width: 700px) {
+    .monitor-body {
+        padding: 16px;
     }
     .chat-container {
-        height: 95vh;
-        border-radius: 12px;
+        width: 85vw;
+        height: 75vh;
+        max-width: none;
     }
     .chat-header h2 {
         font-size: 1rem;
@@ -298,16 +294,4 @@ body::after {
     .message {
         max-width: 95%;
     }
-    .change-name-btn, #clear-chat-btn {
-        padding: 4px 10px;
-        font-size: 0.7rem;
-    }
-    #send-button {
-        padding: 0 16px;
-    }
-}
-
-/* Дополнительный эффект для команд */
-.message strong:contains("СИСТЕМА") {
-    color: #ffaa66;
 }

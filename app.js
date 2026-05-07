@@ -19,6 +19,38 @@ const typingRef = ref(db, 'typing');
 let currentUsername = "";
 let typingTimeout;
 
+// Глобальная переменная за пределами onChildAdded
+let logoShown = sessionStorage.getItem('logo_shown');
+
+// При загрузке очищаем контейнер и показываем лого, если его ещё не показывали в этой сессии
+messagesList.innerHTML = '<div class="message system">Загрузка истории терминала...</div>';
+
+if (!logoShown) {
+    // Показываем лого один раз за сессию (пока не закроете вкладку)
+    const logoDiv = document.createElement('div');
+    logoDiv.className = 'message system';
+    logoDiv.innerHTML = `<pre style="font-family: monospace; font-size: 0.7rem; line-height: 1.2;">${asciiBat}</pre>`;
+    messagesList.appendChild(logoDiv);
+    sessionStorage.setItem('logo_shown', 'true');
+}
+
+onChildAdded(messagesRef, (snapshot) => {
+    const data = snapshot.val();
+    if (!data) return;
+    // Убираем "Загрузка..." если она есть
+    if (messagesList.children.length === 1 && messagesList.children[0].innerText.includes("Загрузка")) {
+        messagesList.innerHTML = '';
+        // Если лого уже было показано, оно останется, если нет — покажем сейчас
+        if (!logoShown) {
+            const logoDiv = document.createElement('div');
+            logoDiv.className = 'message system';
+            logoDiv.innerHTML = `<pre style="font-family: monospace; font-size: 0.7rem; line-height: 1.2;">${asciiBat}</pre>`;
+            messagesList.appendChild(logoDiv);
+            sessionStorage.setItem('logo_shown', 'true');
+        }
+    }
+    // Остальной код добавления сообщения...
+});
 // === ASCII ЛОГО (летучая мышь) ===
 const asciiBat = `
 ╔════════════════════════════════════╗

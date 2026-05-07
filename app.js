@@ -49,8 +49,6 @@ onChildAdded(messagesRef, (snapshot) => {
             sessionStorage.setItem('logo_shown', 'true');
         }
     }
-    // Остальной код добавления сообщения...
-});
 // === ASCII ЛОГО (летучая мышь) ===
 const asciiBat = `
           S H R E K N E T

@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getDatabase, ref, push, onChildAdded, set, remove, onDisconnect, serverTimestamp } from "firebase/database";
+import { getDatabase, ref, push, onChildAdded, set, remove } from "firebase/database";
 
 const firebaseConfig = {
   apiKey: "AIzaSyC0gnDfPZKdTRx0pQ1ExYtsv31z37V6XEY",
@@ -19,43 +19,11 @@ const typingRef = ref(db, 'typing');
 let currentUsername = "";
 let typingTimeout;
 
-// Глобальная переменная за пределами onChildAdded
-let logoShown = sessionStorage.getItem('logo_shown');
-
-// При загрузке очищаем контейнер и показываем лого, если его ещё не показывали в этой сессии
-messagesList.innerHTML = '<div class="message system">Загрузка истории терминала...</div>';
-
-if (!logoShown) {
-    // Показываем лого один раз за сессию (пока не закроете вкладку)
-    const logoDiv = document.createElement('div');
-    logoDiv.className = 'message system';
-    logoDiv.innerHTML = `<pre style="font-family: monospace; font-size: 0.7rem; line-height: 1.2;">${asciiBat}</pre>`;
-    messagesList.appendChild(logoDiv);
-    sessionStorage.setItem('logo_shown', 'true');
-}
-
-onChildAdded(messagesRef, (snapshot) => {
-    const data = snapshot.val();
-    if (!data) return;
-    // Убираем "Загрузка..." если она есть
-    if (messagesList.children.length === 1 && messagesList.children[0].innerText.includes("Загрузка")) {
-        messagesList.innerHTML = '';
-        // Если лого уже было показано, оно останется, если нет — покажем сейчас
-        if (!logoShown) {
-            const logoDiv = document.createElement('div');
-            logoDiv.className = 'message system';
-            logoDiv.innerHTML = `<pre style="font-family: monospace; font-size: 0.7rem; line-height: 1.2;">${asciiBat}</pre>`;
-            messagesList.appendChild(logoDiv);
-            sessionStorage.setItem('logo_shown', 'true');
-        }
-    }
 // === ASCII ЛОГО (летучая мышь) ===
-const asciiBat = `
-          S H R E K N E T
-          
-                __QQ
-               (_)_">
-               _) jgs
+const asciiBat = `     
+  __QQ
+ (_)_">
+_) SHREKNET
 `;
 
 // === Функции работы с именем ===
@@ -131,9 +99,7 @@ function handleCommand(commandText) {
             return true;
         }
         const newName = parts.slice(1).join(" ");
-        if (changeName(newName)) {
-            // Успешно
-        }
+        changeName(newName);
         return true;
     }
     else if (cmd === '/clear') {
@@ -148,7 +114,7 @@ function handleCommand(commandText) {
         }).catch(console.error);
         return true;
     }
-    return false; // не команда
+    return false;
 }
 
 // === Статус "печатает" ===
@@ -179,50 +145,21 @@ function setupTypingStatus(inputElement, statusDiv) {
     });
 }
 
-// === Эффект печатной машинки (опционально) ===
-const TYPEWRITER_EFFECT = false; // выключено, чтобы не мешать командам. Можете включить.
-function appendMessageWithEffect(container, html) {
-    if (!TYPEWRITER_EFFECT) {
-        const div = document.createElement('div');
-        div.className = 'message';
-        div.innerHTML = html;
-        container.appendChild(div);
-        container.scrollTop = container.scrollHeight;
-        return;
-    }
-    // Простая реализация печати (если нужно)
-    const div = document.createElement('div');
-    div.className = 'message';
-    container.appendChild(div);
-    let i = 0;
-    function type() {
-        if (i < html.length) {
-            div.innerHTML += html[i];
-            i++;
-            setTimeout(type, 20);
-        } else {
-            container.scrollTop = container.scrollHeight;
-        }
-    }
-    type();
-}
-
 document.addEventListener('DOMContentLoaded', () => {
     loadOrAskName();
     
-    // Элементы
     const changeBtn = document.getElementById('change-name-btn');
     const messageInput = document.getElementById('message-input');
     const sendBtn = document.getElementById('send-button');
     const messagesList = document.getElementById('messages-list');
     
-    // Добавим блок для статуса "печатает"
+    // Блок статуса "печатает"
     let statusDiv = document.querySelector('.typing-status');
     if (!statusDiv) {
         statusDiv = document.createElement('div');
         statusDiv.className = 'typing-status';
         const inputArea = document.querySelector('.input-area');
-        inputArea.parentNode.insertBefore(statusDiv, inputArea.nextSibling);
+        if (inputArea) inputArea.parentNode.insertBefore(statusDiv, inputArea.nextSibling);
     }
     
     if (changeBtn) {
@@ -236,22 +173,19 @@ document.addEventListener('DOMContentLoaded', () => {
         let text = messageInput.value.trim();
         if (text === "") return;
         
-        // Проверка на команды
         if (text.startsWith('/')) {
-            const isCommand = handleCommand(text);
-            if (isCommand) {
+            if (handleCommand(text)) {
                 messageInput.value = "";
                 messageInput.focus();
                 return;
             }
         }
         
-        // Обычное сообщение
         push(messagesRef, {
             name: currentUsername,
             text: text,
             timestamp: Date.now()
-        }).catch(err => console.error("Ошибка отправки:", err));
+        }).catch(console.error);
         messageInput.value = "";
         messageInput.focus();
     }
@@ -261,23 +195,32 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e.key === 'Enter') sendMessage();
     });
     
-    // Загрузка истории
+    // Загрузка сообщений и показ лого (один раз за сессию)
     messagesList.innerHTML = '<div class="message system">Загрузка истории терминала...</div>';
     
-    // При первом подключении добавим лого, если в базе нет сообщений
-    let isFirstMessage = true;
+    let logoShown = sessionStorage.getItem('logo_shown');
+    if (!logoShown) {
+        const logoDiv = document.createElement('div');
+        logoDiv.className = 'message system';
+        logoDiv.innerHTML = `<pre style="font-family: monospace; font-size: 0.7rem; line-height: 1.2;">${asciiBat}</pre>`;
+        messagesList.appendChild(logoDiv);
+        sessionStorage.setItem('logo_shown', 'true');
+    }
+    
+    let firstRealMessage = true;
     onChildAdded(messagesRef, (snapshot) => {
         const data = snapshot.val();
         if (!data) return;
         
-        if (isFirstMessage && messagesList.children.length === 1 && messagesList.children[0].innerText.includes("Загрузка")) {
+        if (firstRealMessage && messagesList.children.length === 1 && messagesList.children[0].innerText.includes("Загрузка")) {
             messagesList.innerHTML = '';
-            // Добавляем анимированное лого один раз при старте
-            const logoDiv = document.createElement('div');
-            logoDiv.className = 'message system';
-            logoDiv.innerHTML = `<pre style="font-family: monospace; font-size: 0.7rem; line-height: 1.2;">${asciiBat}</pre>`;
-            messagesList.appendChild(logoDiv);
-            isFirstMessage = false;
+            if (sessionStorage.getItem('logo_shown') === 'true') {
+                const logoDiv = document.createElement('div');
+                logoDiv.className = 'message system';
+                logoDiv.innerHTML = `<pre style="font-family: monospace; font-size: 0.7rem; line-height: 1.2;">${asciiBat}</pre>`;
+                messagesList.appendChild(logoDiv);
+            }
+            firstRealMessage = false;
         }
         
         const msgDiv = document.createElement('div');
@@ -287,7 +230,6 @@ document.addEventListener('DOMContentLoaded', () => {
         messagesList.scrollTop = messagesList.scrollHeight;
     });
     
-    // Статус печатает
     setupTypingStatus(messageInput, statusDiv);
 });
 

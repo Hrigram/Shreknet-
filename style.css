@@ -1,4 +1,4 @@
-/* Импорт старых пиксельных шрифтов */
+/* Импорт пиксельного шрифта */
 @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
 
 * {
@@ -8,17 +8,17 @@
 }
 
 body {
-    background: radial-gradient(circle at center, #0a0f0a 0%, #030603 100%);
+    background: radial-gradient(circle at 20% 30%, #0a0f0a, #020402);
     height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 1rem;
+    padding: 1.5rem;
     font-family: 'Share Tech Mono', 'Courier New', monospace;
     position: relative;
 }
 
-/* CRT-эффект (мерцание и линии) */
+/* CRT-эффект: мерцание и горизонтальные линии */
 body::before {
     content: "";
     position: fixed;
@@ -28,15 +28,22 @@ body::before {
     height: 100%;
     background: repeating-linear-gradient(
         0deg,
-        rgba(0, 255, 0, 0.03) 0px,
-        rgba(0, 255, 0, 0.03) 2px,
+        rgba(0, 255, 0, 0.02) 0px,
+        rgba(0, 255, 0, 0.02) 2px,
         transparent 2px,
         transparent 6px
     );
     pointer-events: none;
     z-index: 1;
+    animation: flicker 0.15s infinite;
 }
 
+@keyframes flicker {
+    0% { opacity: 0.8; }
+    100% { opacity: 1; }
+}
+
+/* Тёмная вуаль по краям */
 body::after {
     content: "";
     position: fixed;
@@ -44,38 +51,44 @@ body::after {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.3);
-    box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.8);
+    background: radial-gradient(circle, transparent 60%, rgba(0,0,0,0.5) 100%);
     pointer-events: none;
     z-index: 1;
 }
 
-/* Контейнер чата — как старый монитор */
+/* Контейнер чата — стеклянная панель */
 .chat-container {
     width: 100%;
-    max-width: 800px;
+    max-width: 850px;
     height: 85vh;
-    background: #050a05;
-    border: 2px solid #1f9a2e;
-    border-radius: 12px;
-    box-shadow: 0 0 20px rgba(0, 255, 0, 0.2), inset 0 0 10px rgba(0, 255, 0, 0.1);
+    background: rgba(5, 10, 5, 0.7);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(31, 154, 46, 0.5);
+    border-radius: 20px;
+    box-shadow: 0 0 30px rgba(0, 255, 0, 0.15), inset 0 0 20px rgba(0, 255, 0, 0.05);
     display: flex;
     flex-direction: column;
     overflow: hidden;
     position: relative;
     z-index: 2;
+    transition: box-shadow 0.3s ease;
 }
 
-/* Панель с прыгающим курсором */
+.chat-container:hover {
+    box-shadow: 0 0 40px rgba(0, 255, 0, 0.3);
+}
+
+/* Шапка с неоновой подсветкой */
 .chat-header {
-    background: #021102;
+    background: rgba(2, 17, 2, 0.8);
+    backdrop-filter: blur(4px);
     border-bottom: 1px solid #1f9a2e;
-    padding: 12px 20px;
+    padding: 14px 24px;
     display: flex;
     justify-content: space-between;
-    align-items: baseline;
+    align-items: center;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 12px;
 }
 
 .chat-header h2 {
@@ -83,17 +96,19 @@ body::after {
     font-size: 1.4rem;
     font-weight: normal;
     color: #4aff5a;
-    text-shadow: 0 0 5px #2aff4a;
+    text-shadow: 0 0 6px #2aff4a;
     letter-spacing: 2px;
     display: inline-flex;
     align-items: center;
     gap: 8px;
 }
 
+/* Мигающий курсор */
 .chat-header h2::before {
     content: ">";
     font-weight: bold;
     animation: blink 1.2s step-end infinite;
+    text-shadow: 0 0 8px #00ff00;
 }
 
 @keyframes blink {
@@ -101,133 +116,181 @@ body::after {
     50% { opacity: 0; }
 }
 
-/* Кнопка смены имени в хакерском стиле */
-.change-name-btn {
-    background: #0a1a0a;
-    border: 1px solid #1f9a2e;
-    color: #3eff4a;
-    padding: 4px 12px;
+/* Кнопки в стиле терминала */
+.change-name-btn, #clear-chat-btn {
+    background: rgba(10, 30, 10, 0.8);
+    border: 1px solid #2eff4a;
+    color: #5eff6e;
+    padding: 6px 14px;
     font-family: 'Share Tech Mono', monospace;
     font-size: 0.8rem;
     cursor: pointer;
     transition: all 0.2s;
-    border-radius: 0;
-    box-shadow: inset 0 0 3px #1f9a2e, 0 0 3px #1f9a2e;
+    border-radius: 30px;
+    letter-spacing: 0.5px;
+    backdrop-filter: blur(4px);
 }
 
-.change-name-btn:hover {
+.change-name-btn:hover, #clear-chat-btn:hover {
     background: #1f3a1f;
     text-shadow: 0 0 4px #00ff00;
-    box-shadow: inset 0 0 6px #3eff4a, 0 0 6px #3eff4a;
+    box-shadow: 0 0 10px #2aff4a;
+    border-color: #8aff8a;
 }
 
-/* Поле сообщений — как скроллинг терминала */
+/* Область сообщений */
 .messages-list {
     flex: 1;
     padding: 20px;
     overflow-y: auto;
     display: flex;
     flex-direction: column;
-    gap: 8px;
-    background: #030803;
-    color: #43ff5e;
-    font-size: 0.9rem;
+    gap: 12px;
+    background: rgba(3, 8, 3, 0.5);
 }
 
-/* Стилизация скроллбара под ретро */
+/* Кастомизация скроллбара */
 .messages-list::-webkit-scrollbar {
     width: 8px;
 }
 .messages-list::-webkit-scrollbar-track {
     background: #021102;
-    border-left: 1px solid #1f9a2e;
+    border-radius: 10px;
 }
 .messages-list::-webkit-scrollbar-thumb {
     background: #1f9a2e;
-    border-radius: 0;
+    border-radius: 10px;
+}
+.messages-list::-webkit-scrollbar-thumb:hover {
+    background: #3eff4a;
 }
 
-/* Базовое сообщение */
+/* Отдельное сообщение */
 .message {
     max-width: 85%;
-    padding: 6px 12px;
-    background: #0a120a;
-    border-left: 3px solid #2eff4a;
+    padding: 8px 16px;
+    background: rgba(8, 18, 8, 0.8);
+    backdrop-filter: blur(2px);
+    border-left: 4px solid #2eff4a;
+    border-radius: 12px;
     font-size: 0.9rem;
-    line-height: 1.4;
-    word-wrap: break-word;
+    line-height: 1.45;
     color: #bbffbb;
+    transition: all 0.2s ease;
+    animation: fadeInUp 0.2s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.message:hover {
+    transform: translateX(4px);
+    background: rgba(20, 40, 20, 0.9);
+    border-left-color: #8aff8a;
 }
 
 .message strong {
-    color: #5eff6e;
+    color: #6eff7e;
     font-weight: normal;
     letter-spacing: 1px;
-    text-shadow: 0 0 2px #00cc00;
-    margin-right: 10px;
+    text-shadow: 0 0 3px #00cc00;
+    margin-right: 12px;
 }
 
-/* Системные сообщения (типа загрузка / добро пожаловать) */
+/* Системные сообщения */
 .message.system {
-    background: #051005;
+    background: rgba(5, 15, 5, 0.8);
     border-left-color: #88ff88;
-    color: #88ff88;
+    color: #aaffaa;
     text-align: center;
-    font-style: italic;
     max-width: 95%;
     align-self: center;
     font-size: 0.8rem;
+    font-style: italic;
 }
 
-/* Область ввода — как панель терминала */
-.input-area {
-    background: #021102;
+/* Статус "печатает" */
+.typing-status {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.7rem;
+    color: #6eff7e;
+    background: rgba(2, 17, 2, 0.7);
+    backdrop-filter: blur(4px);
+    padding: 6px 20px;
     border-top: 1px solid #1f9a2e;
-    padding: 14px 20px;
+    text-align: left;
+    letter-spacing: 1px;
+    min-height: 34px;
+}
+
+.typing-status::before {
+    content: "> ";
+    animation: blink 1s step-end infinite;
+}
+
+/* Область ввода */
+.input-area {
+    background: rgba(2, 17, 2, 0.8);
+    border-top: 1px solid #1f9a2e;
+    padding: 16px 20px;
     display: flex;
     gap: 12px;
 }
 
 #message-input {
     flex: 1;
-    background: #000000;
+    background: #010501;
     border: 1px solid #1f9a2e;
-    padding: 12px 16px;
+    border-radius: 40px;
+    padding: 12px 20px;
     font-family: 'Share Tech Mono', monospace;
     font-size: 0.9rem;
-    color: #3eff4a;
+    color: #4eff5a;
     outline: none;
-    box-shadow: inset 0 0 5px #1f9a2e;
+    transition: all 0.2s;
 }
 
 #message-input:focus {
-    border-color: #5eff6e;
-    box-shadow: 0 0 5px #2aff4a, inset 0 0 3px #2aff4a;
+    border-color: #6eff7e;
+    box-shadow: 0 0 12px #2aff4a;
+    background: #000000;
 }
 
 #send-button {
-    background: #0a1a0a;
+    background: rgba(10, 30, 10, 0.9);
     border: 1px solid #2eff4a;
-    color: #4aff5a;
-    padding: 0 20px;
+    border-radius: 40px;
+    color: #5eff6e;
+    padding: 0 28px;
     font-family: 'Share Tech Mono', monospace;
     font-weight: bold;
     cursor: pointer;
     transition: all 0.2s;
-    box-shadow: inset 0 0 3px #1f9a2e;
-    letter-spacing: 2px;
+    letter-spacing: 1px;
 }
 
 #send-button:hover {
     background: #1a3a1a;
-    text-shadow: 0 0 5px #00ff00;
-    box-shadow: inset 0 0 6px #3eff4a, 0 0 8px #3eff4a;
+    text-shadow: 0 0 6px #00ff00;
+    box-shadow: 0 0 12px #2aff4a;
 }
 
-/* Адаптация для мобильных */
+/* Адаптация под мобильные */
 @media (max-width: 600px) {
+    body {
+        padding: 0.5rem;
+    }
     .chat-container {
-        height: 90vh;
+        height: 95vh;
+        border-radius: 12px;
     }
     .chat-header h2 {
         font-size: 1rem;
@@ -235,72 +298,16 @@ body::after {
     .message {
         max-width: 95%;
     }
-    .input-area {
-        flex-wrap: wrap;
+    .change-name-btn, #clear-chat-btn {
+        padding: 4px 10px;
+        font-size: 0.7rem;
     }
     #send-button {
-        padding: 8px 16px;
+        padding: 0 16px;
     }
 }
 
-/* Статус "печатает" */
-.typing-status {
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 0.7rem;
-    color: #5eff6e;
-    background: #021102;
-    padding: 4px 12px;
-    border-top: 1px solid #1f9a2e;
-    text-align: left;
-    letter-spacing: 1px;
-    opacity: 0.8;
-}
-.typing-status::before {
-    content: "> ";
-    animation: blink 1s step-end infinite;
-}
-
-/* Эффект глюка (редкий) */
-@keyframes glitch {
-    0% { text-shadow: 0.05em 0 0 rgba(255,0,0,0.2), -0.05em -0.025em 0 rgba(0,255,0,0.2); }
-    25% { text-shadow: -0.05em -0.025em 0 rgba(255,0,0,0.2), 0.025em 0.05em 0 rgba(0,255,0,0.2); }
-    50% { text-shadow: 0.025em 0.05em 0 rgba(255,0,0,0.2), 0.05em 0 0 rgba(0,255,0,0.2); }
-    75% { text-shadow: -0.025em 0 0 rgba(255,0,0,0.2), -0.025em -0.025em 0 rgba(0,255,0,0.2); }
-    100% { text-shadow: none; }
-}
-.message {
-    transition: all 0.05s ease;
-}
-.message:hover {
-    animation: glitch 0.2s step-end;
-}
-
-/* Статус "печатает" */
-.typing-status {
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 0.7rem;
-    color: #5eff6e;
-    background: #021102;
-    padding: 6px 15px;
-    border-top: 1px solid #1f9a2e;
-    text-align: left;
-    letter-spacing: 1px;
-    opacity: 0.9;
-    min-height: 32px;
-}
-.typing-status::before {
-    content: "> ";
-    animation: blink 1s step-end infinite;
-}
-@keyframes blink {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0; }
-}
-
-/* Для ASCII-логирования */
-.message pre {
-    margin: 0;
-    white-space: pre-wrap;
-    font-family: inherit;
-    color: #4aff5a;
+/* Дополнительный эффект для команд */
+.message strong:contains("СИСТЕМА") {
+    color: #ffaa66;
 }
